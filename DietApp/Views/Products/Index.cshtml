@@ -1,0 +1,66 @@
+﻿@model IEnumerable<DietApp.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KcalPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FatPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CarboPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProteinPer100)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <img decoding="async" src="@("~/Image/"+item.ImageName)" asp-append-version="true" width="250px" height="250px" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KcalPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FatPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CarboPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProteinPer100)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

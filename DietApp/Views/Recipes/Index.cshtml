@@ -1,0 +1,96 @@
+﻿@model IEnumerable<DietApp.Models.Recipe>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DifficultyLevel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PreparationTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Portions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalKcal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalFat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalCarbo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalProtein)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalWeight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DifficultyLevel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PreparationTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Portions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalKcal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalFat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalCarbo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalProtein)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalWeight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
