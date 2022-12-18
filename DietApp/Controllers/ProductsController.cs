@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using DietApp.Data;
 using DietApp.Models;
 using System.Drawing;
+using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
 
 namespace DietApp.Controllers
 {
@@ -23,9 +26,65 @@ namespace DietApp.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string order, string search, string currentFilter, int? pageNumber)
         {
-              return View(await _context.Products.ToListAsync());
+            ViewData["Order"] = order;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(order) ? "name_desc" : "";
+            ViewData["KcalSortParm"] = order == "kcal" ? "kcal_desc" : "kcal";
+            ViewData["FatSortParm"] = order == "fat" ? "fat_desc" : "fat";
+            ViewData["CarboSortParm"] = order == "carbo" ? "carbo_desc" : "carbo";
+            ViewData["ProteinSortParm"] = order == "protein" ? "protein_desc" : "protein";
+
+            if (search != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                search = currentFilter;
+            }
+            ViewData["CurrentFilter"] = search;
+
+            var products = await _context.Products.ToListAsync();
+            if (!String.IsNullOrEmpty(search))
+            {
+                products = products.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+            switch (order)
+            {
+                case "kcal_desc":
+                    products = products.OrderByDescending(s => s.KcalPer100).ToList();
+                    break;
+                case "kcal":
+                    products = products.OrderBy(s => s.KcalPer100).ToList();
+                    break;
+                case "fat_desc":
+                    products = products.OrderByDescending(s => s.FatPer100).ToList();
+                    break;
+                case "fat":
+                    products = products.OrderBy(s => s.FatPer100).ToList();
+                    break;
+                case "carbo_desc":
+                    products = products.OrderByDescending(s => s.CarboPer100).ToList();
+                    break;
+                case "carbo":
+                    products = products.OrderBy(s => s.CarboPer100).ToList();
+                    break;
+                case "protein_desc":
+                    products = products.OrderByDescending(s => s.ProteinPer100).ToList();
+                    break;
+                case "protein":
+                    products = products.OrderBy(s => s.ProteinPer100).ToList();
+                    break;
+                case "name_desc":
+                    products = products.OrderByDescending(s => s.Name).ToList();
+                    break;
+                default:
+                    products = products.OrderBy(s => s.Name).ToList();
+                    break;
+            }
+            int pageSize = 5;
+            return View(PaginatedList<Product>.Create(products, pageNumber ?? 1, pageSize));
         }
 
         // GET: Products/Details/5
@@ -46,6 +105,7 @@ namespace DietApp.Controllers
             return View(product);
         }
 
+        [Authorize]
         // GET: Products/Create
         public IActionResult Create()
         {
@@ -77,6 +137,7 @@ namespace DietApp.Controllers
                     using var fileStream = new FileStream(path, FileMode.Create);
                     await product.Image.CopyToAsync(fileStream);
                 }
+                product.KcalPer100 = product.FatPer100 * 9 + product.CarboPer100 * 4 + product.ProteinPer100 * 4;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -84,9 +145,10 @@ namespace DietApp.Controllers
             return View(product);
         }
 
-  
+
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Products == null)
@@ -138,6 +200,7 @@ namespace DietApp.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)

@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221122220913_InitModels")]
-    partial class InitModels
+    [Migration("20221214231043_ImageInRecipe")]
+    partial class ImageInRecipe
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "6.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -39,9 +39,38 @@ namespace DietApp.Migrations
                     b.ToTable("CategoryRecipe");
                 });
 
+            modelBuilder.Entity("DietApp.Models.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
             modelBuilder.Entity("DietApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
@@ -137,11 +166,11 @@ namespace DietApp.Migrations
 
             modelBuilder.Entity("DietApp.Models.Comment", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"), 1L, 1);
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -158,7 +187,7 @@ namespace DietApp.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CommentId");
 
                     b.HasIndex("RecipeId");
 
@@ -169,11 +198,11 @@ namespace DietApp.Migrations
 
             modelBuilder.Entity("DietApp.Models.DailyConsumption", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("DailyConsumptionId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DailyConsumptionId"), 1L, 1);
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -181,7 +210,7 @@ namespace DietApp.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("DailyConsumptionId");
 
                     b.HasIndex("UserId");
 
@@ -190,16 +219,13 @@ namespace DietApp.Migrations
 
             modelBuilder.Entity("DietApp.Models.Meal", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("DailyConsumptionId")
+                    b.Property<int>("MealId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("DailyConsumptionId1")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MealId"), 1L, 1);
 
-                    b.Property<int>("MealId")
+                    b.Property<int>("DailyConsumptionId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -211,9 +237,9 @@ namespace DietApp.Migrations
                     b.Property<int>("Weight")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("MealId");
 
-                    b.HasIndex("DailyConsumptionId1");
+                    b.HasIndex("DailyConsumptionId");
 
                     b.HasIndex("ProductId");
 
@@ -264,10 +290,14 @@ namespace DietApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeId"), 1L, 1);
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DifficultyLevel")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Portions")
                         .HasColumnType("int");
@@ -276,6 +306,7 @@ namespace DietApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalCarbo")
@@ -327,33 +358,6 @@ namespace DietApp.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -511,7 +515,9 @@ namespace DietApp.Migrations
                 {
                     b.HasOne("DietApp.Models.DailyConsumption", "DailyConsumption")
                         .WithMany("Meals")
-                        .HasForeignKey("DailyConsumptionId1");
+                        .HasForeignKey("DailyConsumptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DietApp.Models.Product", "Product")
                         .WithMany()
@@ -548,7 +554,7 @@ namespace DietApp.Migrations
                         .IsRequired();
 
                     b.HasOne("DietApp.Models.Recipe", "Recipe")
-                        .WithMany()
+                        .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -560,7 +566,7 @@ namespace DietApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("DietApp.Models.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -587,7 +593,7 @@ namespace DietApp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("DietApp.Models.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -619,6 +625,11 @@ namespace DietApp.Migrations
             modelBuilder.Entity("DietApp.Models.DailyConsumption", b =>
                 {
                     b.Navigation("Meals");
+                });
+
+            modelBuilder.Entity("DietApp.Models.Recipe", b =>
+                {
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
@@ -7,6 +8,7 @@ namespace DietApp.Models
 {
     public class Product
     {
+        [HiddenInput(DisplayValue = false)]
         public int ProductId { get; set; }
 
         [Required(ErrorMessage = "Nazwa produktu jest wymagana!")]
@@ -17,7 +19,7 @@ namespace DietApp.Models
         [Required(ErrorMessage = "Wartość energetyczna w 100g produktu jest wymagana!")]
         [Range(0, 900, ErrorMessage = "Nieprawidłowa liczba!")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Wpisana wartość musi być liczbą")]
-        [Display(Name = "Wartość energetyczna w 100g produktu")]
+        [Display(Name = "kcal w 100g produktu")]
         public double KcalPer100 { get; set; }
         
         [Required(ErrorMessage = "Tłuszcz w 100g produktu jest wymagany!")]

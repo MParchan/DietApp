@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DietApp.Migrations
 {
-    public partial class InitModels : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -194,14 +194,14 @@ namespace DietApp.Migrations
                 name: "DailyConsumption",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DailyConsumptionId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    DailyConsumptionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DailyConsumption", x => x.Id);
+                    table.PrimaryKey("PK_DailyConsumption", x => x.DailyConsumptionId);
                     table.ForeignKey(
                         name: "FK_DailyConsumption_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -241,27 +241,27 @@ namespace DietApp.Migrations
                 name: "Meals",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MealId = table.Column<int>(type: "int", nullable: false),
+                    MealId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     DailyConsumptionId = table.Column<int>(type: "int", nullable: false),
-                    Weight = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DailyConsumptionId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Weight = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Meals", x => x.Id);
+                    table.PrimaryKey("PK_Meals", x => x.MealId);
                     table.ForeignKey(
                         name: "FK_Meals_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Meals_DailyConsumption_DailyConsumptionId1",
-                        column: x => x.DailyConsumptionId1,
+                        name: "FK_Meals_DailyConsumption_DailyConsumptionId",
+                        column: x => x.DailyConsumptionId,
                         principalTable: "DailyConsumption",
-                        principalColumn: "Id");
+                        principalColumn: "DailyConsumptionId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Meals_Products_ProductId",
                         column: x => x.ProductId,
@@ -298,17 +298,17 @@ namespace DietApp.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CommentId = table.Column<int>(type: "int", nullable: false),
+                    CommentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
                         name: "FK_Comments_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -409,9 +409,9 @@ namespace DietApp.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meals_DailyConsumptionId1",
+                name: "IX_Meals_DailyConsumptionId",
                 table: "Meals",
-                column: "DailyConsumptionId1");
+                column: "DailyConsumptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Meals_ProductId",

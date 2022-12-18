@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DietApp.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public override string Id { get; set; }
         public int Height { get; set; }
         public double Weight { get; set; }
         public int Age { get; set; }

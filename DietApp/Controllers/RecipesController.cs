@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DietApp.Data;
 using DietApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using NuGet.ContentModel;
+using static System.Net.WebRequestMethods;
+using System.Reflection.Metadata;
 
 namespace DietApp.Controllers
 {
@@ -46,9 +51,10 @@ namespace DietApp.Controllers
         }
 
         // GET: Recipes/Create
+        [Authorize]
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["Products"] = new SelectList(_context.Products, "ProductId", "Name");
             return View();
         }
 
@@ -57,19 +63,45 @@ namespace DietApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RecipeId,UserId,Title,Description,DifficultyLevel,PreparationTime,Portions,TotalKcal,TotalFat,TotalCarbo,TotalProtein,TotalWeight")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("RecipeId,Title,Description,DifficultyLevel,PreparationTime,Portions,TotalKcal,TotalFat,TotalCarbo,TotalProtein,TotalWeight,Ingredients")] Recipe recipe)
         {
             if (ModelState.IsValid)
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                recipe.UserId = userId;
+                double totalKcal = 0;
+                double totalFat = 0;
+                double totalCarbo = 0;
+                double totalProtein = 0;
+                int totalWeight = 0;
+                foreach (var item in recipe.Ingredients)
+                {
+                    totalKcal += _context.Products.Find(item.ProductId).KcalPer100 * item.Weight/100;
+                    totalFat += _context.Products.Find(item.ProductId).FatPer100 * item.Weight / 100;
+                    totalCarbo += _context.Products.Find(item.ProductId).CarboPer100 * item.Weight / 100;
+                    totalProtein += _context.Products.Find(item.ProductId).ProteinPer100 * item.Weight / 100;
+                    totalWeight += item.Weight;
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        _context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients ON;");
+                        _context.Add(item);
+                        transaction.Commit();
+                    }
+                }
+                recipe.TotalKcal = Math.Round(totalKcal, 2);
+                recipe.TotalFat = Math.Round(totalFat, 2);
+                recipe.TotalCarbo = Math.Round(totalCarbo, 2);
+                recipe.TotalProtein = Math.Round(totalProtein, 2);
+                recipe.TotalWeight = totalWeight;
                 _context.Add(recipe);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", recipe.UserId);
             return View(recipe);
         }
 
         // GET: Recipes/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Recipes == null)
@@ -123,6 +155,7 @@ namespace DietApp.Controllers
         }
 
         // GET: Recipes/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Recipes == null)

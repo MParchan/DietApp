@@ -14,10 +14,6 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
-            <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
@@ -29,12 +25,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="DifficultyLevel" class="control-label"></label>
-                <input asp-for="DifficultyLevel" class="form-control" />
+                <select asp-for="DifficultyLevel" class="form-control">
+                    <option value="">--Wybierz--</option>
+                    <option value="VeryEasy">Bardzo łatwy</option>
+                    <option value="Easy">Łatwy</option>
+                    <option value="Medium">Średni</option>
+                    <option value="Hard">Trudny</option>
+                    <option value="VeryHard">Bardzo trudny</option>
+                </select>
                 <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PreparationTime" class="control-label"></label>
-                <input asp-for="PreparationTime" class="form-control" />
+                <div class="input-group">
+                    <input asp-for="PreparationTime" class="form-control" />
+                    <span class="input-group-text"> min </span>
+                </div>
                 <span asp-validation-for="PreparationTime" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -42,30 +48,20 @@
                 <input asp-for="Portions" class="form-control" />
                 <span asp-validation-for="Portions" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TotalKcal" class="control-label"></label>
-                <input asp-for="TotalKcal" class="form-control" />
-                <span asp-validation-for="TotalKcal" class="text-danger"></span>
+            <div style="padding-bottom:20px">
+                <button type="button" class="btn btn-primary" onclick="AddRow()">Dodaj składniki</button>
             </div>
-            <div class="form-group">
-                <label asp-for="TotalFat" class="control-label"></label>
-                <input asp-for="TotalFat" class="form-control" />
-                <span asp-validation-for="TotalFat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalCarbo" class="control-label"></label>
-                <input asp-for="TotalCarbo" class="form-control" />
-                <span asp-validation-for="TotalCarbo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalProtein" class="control-label"></label>
-                <input asp-for="TotalProtein" class="form-control" />
-                <span asp-validation-for="TotalProtein" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalWeight" class="control-label"></label>
-                <input asp-for="TotalWeight" class="form-control" />
-                <span asp-validation-for="TotalWeight" class="text-danger"></span>
+            <div id="ingredientsTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produkt</th>
+                            <th>Ilość</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ingredientsList" data-count="0">
+                    </tbody>
+                </table>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -74,10 +70,49 @@
     </div>
 </div>
 
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
+<style>
+    .close {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        right: 0%;
+        padding: 12px 16px;
+        transform: translate(0%, -50%);
+    }
+</style>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('ingredientsTable').style.display = 'none';
+
+          function AddRow()
+          {
+            var countVal = parseInt($('#ingredientsList').attr('data-count'));
+            var html = '';
+            html += '<tr id="tr[' + countVal + ']">';
+            html += '   <td><select class="form-control" name="Ingredients[' + countVal + '].ProductId">@foreach (var item in ViewBag.Products){<option value=@item.Value>@item.Text</option>}</select></td>';
+            html += '   <td><div class="input-group"><input type="text" name="Ingredients[' + countVal + '].Weight" class="form-control" required/><span class="input-group-text"> g </span></div></td>';
+            html += '   <td data-close><span id="' + countVal + '" onclick="DeleteRow(this.id)" type="button" class="px-2 py-1">&times;</span></td > ';
+            html += '</tr>';
+
+            $('#ingredientsList').append(html);
+              countVal += 1;
+            $('#ingredientsList').attr('data-count', countVal);
+            document.getElementById('ingredientsTable').style.display = 'block';
+
+          }
+          function DeleteRow(id)
+          {
+              document.getElementById('tr[' + id + ']').style.display = 'none';
+            console.log('tr[' + id + ']');
+          }
+    </script>
+    
 }

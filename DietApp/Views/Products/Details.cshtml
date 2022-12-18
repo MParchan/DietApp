@@ -41,9 +41,23 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ProteinPer100)
         </dd>
+        <dd class="col-sm-10">
+            @if (Model.ImageName == null)
+            {
+                <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" width="100px" height="100px" />
+            }
+            else
+            {
+                <img decoding="async" src="@("~/images/"+Model.ImageName)" asp-append-version="true" width="200px" height="200px" />
+            }
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> |
+     @if (ViewContext.HttpContext.User.IsInRole("Admin"))
+     {
+        <a asp-action="Edit" asp-route-id="@Model?.ProductId">Edit</a> 
+        <text> |</text>
+     }
     <a asp-action="Index">Back to List</a>
 </div>
