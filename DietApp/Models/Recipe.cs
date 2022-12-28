@@ -9,6 +9,7 @@ namespace DietApp.Models
     {
         [HiddenInput(DisplayValue = false)]
         public int RecipeId { get; set; }
+        [Display(Name = "Użytkownik")]
         public string UserId { get; set; }
 
         [Required(ErrorMessage = "Nazwa przepisu jest wymagana!")]
@@ -17,10 +18,11 @@ namespace DietApp.Models
         public string Title { get; set; }
         public string ImageName { get; set; }
         [NotMapped]
+        [Display(Name = "Zdjęcie przepisu")]
         public IFormFile Image { get; set; }
 
         [Required(ErrorMessage = "Opis przepisu jest wymagany!")]
-        [MaxLength(50, ErrorMessage = "Opis może mieć maksymalnie 5000 znaków")]
+        [MaxLength(5000, ErrorMessage = "Opis może mieć maksymalnie 5000 znaków")]
         [Display(Name = "Opis przepisu")]
         public string Description { get; set; }
 
@@ -45,8 +47,9 @@ namespace DietApp.Models
         public int TotalWeight { get; set; }
 
         public virtual ApplicationUser User { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        [Display(Name = "Kategorie")]
         public virtual ICollection<Category> Category { get; set; }
-        [Required]
         public virtual ICollection<RecipeIngredient> Ingredients { get; set; }
 
         public enum Difficulty

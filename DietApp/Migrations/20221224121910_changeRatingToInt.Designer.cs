@@ -4,6 +4,7 @@ using DietApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221224121910_changeRatingToInt")]
+    partial class changeRatingToInt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("RecipesRecipeId");
 
-                    b.ToTable("CategoryRecipe", (string)null);
+                    b.ToTable("CategoryRecipe");
                 });
 
             modelBuilder.Entity("DietApp.Models.ApplicationRole", b =>
@@ -159,7 +161,7 @@ namespace DietApp.Migrations
 
                     b.HasKey("CategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("DietApp.Models.Comment", b =>
@@ -191,7 +193,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("DietApp.Models.DailyConsumption", b =>
@@ -212,7 +214,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DailyConsumption", (string)null);
+                    b.ToTable("DailyConsumption");
                 });
 
             modelBuilder.Entity("DietApp.Models.Meal", b =>
@@ -243,7 +245,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Meals", (string)null);
+                    b.ToTable("Meals");
                 });
 
             modelBuilder.Entity("DietApp.Models.Product", b =>
@@ -279,7 +281,7 @@ namespace DietApp.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("DietApp.Models.Recipe", b =>
@@ -334,7 +336,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Recipes", (string)null);
+                    b.ToTable("Recipes");
                 });
 
             modelBuilder.Entity("DietApp.Models.RecipeIngredient", b =>
@@ -360,7 +362,7 @@ namespace DietApp.Migrations
 
                     b.HasIndex("RecipeId");
 
-                    b.ToTable("RecipeIngredients", (string)null);
+                    b.ToTable("RecipeIngredients");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

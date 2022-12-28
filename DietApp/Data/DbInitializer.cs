@@ -49,6 +49,26 @@ namespace DietApp.Data
             }
             context.SaveChanges();
 
+            var categories = new Category[]
+            {
+                new Category{Name="Z mięsem"},
+                new Category{Name="Wegetariańskie"},
+                new Category{Name="Wegańskie"},
+                new Category{Name="Keto"},
+                new Category{Name="Wysokobiałkowe"},
+                new Category{Name="Low fat"},
+                new Category{Name="Obiadowe"},
+                new Category{Name="Na słodko"},
+                new Category{Name="Świąteczne"},
+                new Category{Name="W mniej niż 20 minut"},
+                new Category{Name="Dla początkujących"},
+            };
+            foreach (Category c in categories)
+            {
+                context.Categories.Add(c);
+
+            }
+            context.SaveChanges();
         }
     }
 }

@@ -16,7 +16,7 @@
     <div class="form-actions no-color">
         <p>
             Find by name: <input type="text" name="Search" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" />
+            <input type="submit" value="Search" class="btn btn-default btn-dark" />
             @if (@ViewData["CurrentFilter"] != null)
             {
                 <a style="text-decoration: none" asp-action="Index">@ViewData["CurrentFilter"] ✖</a>
@@ -142,7 +142,7 @@
                         <text> |</text> 
                         <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a>
                         <text> |</text>
-                        <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                        <a asp-action="Delete" class="text-danger" asp-route-id="@item.ProductId">Delete</a>
                     }
             </td>
         </tr>

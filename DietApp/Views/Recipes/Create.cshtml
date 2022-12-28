@@ -4,75 +4,107 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Create</h1>
-
-<h4>Recipe</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DifficultyLevel" class="control-label"></label>
-                <select asp-for="DifficultyLevel" class="form-control">
-                    <option value="">--Wybierz--</option>
-                    <option value="VeryEasy">Bardzo łatwy</option>
-                    <option value="Easy">Łatwy</option>
-                    <option value="Medium">Średni</option>
-                    <option value="Hard">Trudny</option>
-                    <option value="VeryHard">Bardzo trudny</option>
-                </select>
-                <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PreparationTime" class="control-label"></label>
-                <div class="input-group">
-                    <input asp-for="PreparationTime" class="form-control" />
-                    <span class="input-group-text"> min </span>
+<div style="max-width: 80%; margin-left:10%">
+    <p class="display-6">Dodaj przepis</p>
+    <hr />
+    <div class="text-center">
+        <div>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
-                <span asp-validation-for="PreparationTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Portions" class="control-label"></label>
-                <input asp-for="Portions" class="form-control" />
-                <span asp-validation-for="Portions" class="text-danger"></span>
-            </div>
-            <div style="padding-bottom:20px">
-                <button type="button" class="btn btn-primary" onclick="AddRow()">Dodaj składniki</button>
-            </div>
-            <div id="ingredientsTable">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produkt</th>
-                            <th>Ilość</th>
-                        </tr>
-                    </thead>
-                    <tbody id="ingredientsList" data-count="0">
-                    </tbody>
-                </table>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea rows="6" asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select asp-for="Category" name="categoriesId" class="form-control" multiple>
+                    @foreach(var item in ViewBag.Categories)
+                    {
+                        <option value=@item.Value>@item.Text</option>
+                    }
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DifficultyLevel" class="control-label"></label>
+                    <select asp-for="DifficultyLevel" class="form-select">
+                        <option value="" selected>--Wybierz--</option>
+                        <option value="VeryEasy">Bardzo łatwy</option>
+                        <option value="Easy">Łatwy</option>
+                        <option value="Medium">Średni</option>
+                        <option value="Hard">Trudny</option>
+                        <option value="VeryHard">Bardzo trudny</option>
+                    </select>
+                    <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PreparationTime" class="control-label"></label>
+                    <div class="input-group">
+                        <input asp-for="PreparationTime" class="form-control" />
+                        <span class="input-group-text"> min </span>
+                    </div>
+                    <span asp-validation-for="PreparationTime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Portions" class="control-label"></label>
+                    <input asp-for="Portions" class="form-control" />
+                    <span asp-validation-for="Portions" class="text-danger"></span>
+                </div>
+            
+                <div id="ingredientsTable">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produkt</th>
+                                <th>Ilość</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ingredientsList" data-count="1">
+                            <tr id="tr[0]">
+                                <td>
+                                    <select class="form-select" name="Ingredients[0].ProductId">
+                                        <option value="" selected>--Wybierz--</option>
+                                        @foreach (var item in ViewBag.Products)
+                                        {
+                                            <option value=@item.Value>@item.Text</option>
+                                        }
+                                    </select>
+                                </td>
+                               <td>
+                                   <div class="input-group">
+                                       <input type="text" name="Ingredients[0].Weight" class="form-control" required />
+                                       <span class="input-group-text"> g </span>
+                                   </div>
+                               </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="padding-bottom:20px">
+                    <button type="button" class="btn btn-primary" onclick="AddRow()">Dodaj składniki</button>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Image" class="control-label"></label>
+                    <input asp-for="Image" accept="image/*" />
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    <div>
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>
 
 <style>
@@ -90,14 +122,13 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        document.getElementById('ingredientsTable').style.display = 'none';
 
           function AddRow()
           {
             var countVal = parseInt($('#ingredientsList').attr('data-count'));
             var html = '';
             html += '<tr id="tr[' + countVal + ']">';
-            html += '   <td><select class="form-control" name="Ingredients[' + countVal + '].ProductId">@foreach (var item in ViewBag.Products){<option value=@item.Value>@item.Text</option>}</select></td>';
+            html += '   <td><select class="form-select" name="Ingredients[' + countVal + '].ProductId"><option value="" selected>--Wybierz--</option>@foreach (var item in ViewBag.Products){<option value=@item.Value>@item.Text</option>}</select></td>';
             html += '   <td><div class="input-group"><input type="text" name="Ingredients[' + countVal + '].Weight" class="form-control" required/><span class="input-group-text"> g </span></div></td>';
             html += '   <td data-close><span id="' + countVal + '" onclick="DeleteRow(this.id)" type="button" class="px-2 py-1">&times;</span></td > ';
             html += '</tr>';
@@ -105,7 +136,6 @@
             $('#ingredientsList').append(html);
               countVal += 1;
             $('#ingredientsList').attr('data-count', countVal);
-            document.getElementById('ingredientsTable').style.display = 'block';
 
           }
           function DeleteRow(id)

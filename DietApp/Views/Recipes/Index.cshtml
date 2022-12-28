@@ -1,101 +1,99 @@
-﻿@model IEnumerable<DietApp.Models.Recipe>
+﻿@using DietApp.Data
+@model PaginatedList<DietApp.Models.Recipe>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<div class="m-2" style="width: 20%; float:left; padding-top:115px">
+    <div>
+        @if (@ViewData["CurrentCategory"] != null)
+        {
+            <a style="text-decoration: none" asp-action="Index" asp-route-search="@ViewData["CurrentFilter"]">@ViewData["CurrentCategory"] ✖</a>
+        }
+    </div>
+    <h5>Kategorie:</h5>
+    @foreach(var item in ViewBag.Categories)
+    {
+        <form asp-action="Index" method="get">
+            <div>
+                <input type="hidden" name="search" value="@ViewData["CurrentFilter"]">
+                <input type="submit" name="category" value="@item.Name" />
+            </div>
+        </form>
+    }
+</div>
 
-<h1>Index</h1>
+<div style="max-width: 80%; margin-left:20%">
+    <div class="text-center">
+        <p class="display-3">Przepisy</p>
+    
+    <div class="text-start m-3">
+        <a asp-action="Create"class="btn btn-default btn-dark">Dodaj przepis</a>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DifficultyLevel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PreparationTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Portions)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalKcal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalFat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalCarbo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalProtein)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalWeight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DifficultyLevel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreparationTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Portions)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalKcal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalFat)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalCarbo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalProtein)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalWeight)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.RecipeId">Details</a>
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <input type="text" class="w-50" placeholder="Czego szukasz?" name="Search" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Szukaj" class="btn btn-default btn-dark" />
+            <input type="hidden" name="category" value="@ViewData["CurrentCategory"]" />
+            <div>
+                @if (@ViewData["CurrentFilter"] != null)
+                {
+                        <a style="text-decoration: none" asp-action="Index" asp-route-category="@ViewData["CurrentCategory"]">@ViewData["CurrentFilter"] ✖</a>
+                }
+            </div>
+        </div>
+    </form>
+    </div>
+    <div>
+        @if (Model.Count() == 0)
+        {
+            <p>Brak wyników</p>
+        }
+        @foreach (var item in Model)
+        {
+            <div class="border rounded m-2 p-1" >
+                @if (item.ImageName == null)
+                {
+                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" height="100px" />
+                }
+                else
+                {
+                    <img decoding="async" src="@("~/images/"+item.ImageName)" asp-append-version="true"  height="100px" />
+                }
+                <a asp-action="Details" asp-route-id="@item.RecipeId">@item.Title</a>
+                <div class="text-end">
                 @if (ViewContext.HttpContext.User.IsInRole("Admin"))
                 {
-                    <text> |</text>
                     <a asp-action="Edit" asp-route-id="@item.RecipeId">Edit</a>
                     <text> |</text>
-                    <a asp-action="Delete" asp-route-id="@item.RecipeId">Delete</a>
+                    <a asp-action="Delete" class="text-danger" asp-route-id="@item.RecipeId">Delete</a>
                 }
-            </td>
-        </tr>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-    </tbody>
-</table>
+
+<a asp-action="Index"
+   asp-route-order="@ViewData["Order"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-category="@ViewData["CurrentCategory"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-order="@ViewData["Order"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   asp-route-category="@ViewData["CurrentCategory"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

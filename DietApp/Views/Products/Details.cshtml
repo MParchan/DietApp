@@ -51,6 +51,15 @@
                 <img decoding="async" src="@("~/images/"+Model.ImageName)" asp-append-version="true" width="200px" height="200px" />
             }
         </dd>
+        @if (Model.RecipeId != 0)
+        {
+            <dt>
+                Przepis: 
+            </dt>
+            <dd> 
+                <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.RecipeId">Przejdź do przepisu</a>
+            </dd>
+        }
     </dl>
 </div>
 <div>

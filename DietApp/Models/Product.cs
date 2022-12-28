@@ -39,11 +39,13 @@ namespace DietApp.Models
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Wpisana wartość musi być liczbą")]
         [Display(Name = "Białko w 100g produktu")]
         public double ProteinPer100 { get; set; }
-
+        public int RecipeId { get; set; }
         public string ImageName { get; set; }
 
         [NotMapped]
         [Display(Name = "Zdjęcie produktu")]
         public IFormFile Image { get; set; }
+
+        
     }
 }

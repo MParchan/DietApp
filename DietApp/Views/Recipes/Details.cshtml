@@ -3,83 +3,85 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    <link rel="stylesheet" href="https://cdn.korzh.com/metroui/v4.5.1/css/metro-all.min.css">
+    <script src="https://cdn.korzh.com/metroui/v4.5.1/js/metro.min.js"></script>
 }
 
-<h1>Details</h1>
+<div class="p-3" style="max-width: 80%; margin-left:10%">
+    <div style="height:50px">
+        <div class="w-50" style="float:left">
+            <input data-role="rating"
+                   data-value="@ViewBag.Rating"
+                   data-message="(@ViewBag.CommentsCount)"
+                   data-static="true">
+        </div>
+        <div class="w-50 text-end" style="float:left">
+            <p>@Model.User.UserName</p>
+        </div>
+    </div>
+    <div class="text-center my-5">
+        <p class="display-3 m-3">@Model.Title</p>
+        @if (Model.ImageName != null)
+        {
+            <img decoding="async" src="@("~/images/"+Model.ImageName)" asp-append-version="true" width="400px" class="m-3" />
+        }
+        <div class="text-start">
+            @if (Model.Category.Count() > 0)
+            {
+                <h5 class="mt-4">Kategorie:</h5>
+                @foreach (var item in Model.Category)
+                {
+                    @item.Name
 
-<div>
-    <h4>Recipe</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DifficultyLevel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DifficultyLevel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PreparationTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PreparationTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Portions)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Portions)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalKcal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalKcal)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalFat)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalFat)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalCarbo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalCarbo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalProtein)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalProtein)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalWeight)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalWeight)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.User.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.RecipeId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+                    <text>, </text>
+                }
+            }
+            <h5 class="mt-4">Składniki:</h5>
+            <ul>
+                @foreach(var item in Model.Ingredients)
+                {
+                    <li><b>@item.Product.Name: </b>@item.Weight g</li>
+                }
+            </ul>
+            <h5 class="mt-4">Przepis:</h5>
+            <p style="text-align: justify">@Model.Description</p>
+        </div>
+        <div class="text-start mt-4">
+            <p><b>Czas przygotowania:</b> @Model.PreparationTime minut</p>
+            <p><b>Liczba porcji:</b> @Model.Portions</p>
+            <p><b>Wartość odżywcza:</b></p>
+            <ul>
+                <li>Kalorie: @Model.TotalKcal kcal</li>
+                <li>Tłuszcz: @Model.TotalFat g</li>
+                <li>Węglowodany: @Model.TotalCarbo g</li>
+                <li>Białko: @Model.TotalProtein g</li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <partial name="_AddComment" model="null"/>
+    </div>
+    <div class="pt-5">
+        @if (Model.Comments.Count == 0)
+        {
+            <p>Brak komentarzy</p>
+        }
+        @foreach(var item in Model.Comments)
+        {
+            <div class="border rounded m-2 p-1" style="min-height:40px">
+                <div class="w-50" style="float:left">
+                    <b>@item.User.UserName</b>
+                </div>
+                <div class="text-end w-50" style="float:left">
+                    <input data-role="rating"
+                        data-value="@item.Rating"
+                        data-static="true" />
+                </div>
+                <p>@item.Content</p>
+            </div>
+        }
+    </div>
+    <br />
+    <br />
+    <br />
 </div>

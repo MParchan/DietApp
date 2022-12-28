@@ -31,7 +31,14 @@
             </div>
             <div class="form-group">
                 <label asp-for="DifficultyLevel" class="control-label"></label>
-                <input asp-for="DifficultyLevel" class="form-control" />
+                <select asp-for="DifficultyLevel" class="form-select">
+                    <option value="" selected>--Wybierz--</option>
+                    <option value="VeryEasy">Bardzo łatwy</option>
+                    <option value="Easy">Łatwy</option>
+                    <option value="Medium">Średni</option>
+                    <option value="Hard">Trudny</option>
+                    <option value="VeryHard">Bardzo trudny</option>
+                </select>
                 <span asp-validation-for="DifficultyLevel" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -43,31 +50,6 @@
                 <label asp-for="Portions" class="control-label"></label>
                 <input asp-for="Portions" class="form-control" />
                 <span asp-validation-for="Portions" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalKcal" class="control-label"></label>
-                <input asp-for="TotalKcal" class="form-control" />
-                <span asp-validation-for="TotalKcal" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalFat" class="control-label"></label>
-                <input asp-for="TotalFat" class="form-control" />
-                <span asp-validation-for="TotalFat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalCarbo" class="control-label"></label>
-                <input asp-for="TotalCarbo" class="form-control" />
-                <span asp-validation-for="TotalCarbo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalProtein" class="control-label"></label>
-                <input asp-for="TotalProtein" class="form-control" />
-                <span asp-validation-for="TotalProtein" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TotalWeight" class="control-label"></label>
-                <input asp-for="TotalWeight" class="form-control" />
-                <span asp-validation-for="TotalWeight" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

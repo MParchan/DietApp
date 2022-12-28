@@ -1,0 +1,22 @@
+﻿@model DietApp.Models.Comment
+
+<hr />
+<h3>Komentarze:</h3>
+<form asp-controller="Recipes" asp-action="AddComment">
+    <input asp-for="RecipeId" type="hidden" value="@ViewBag.RecipeId"/>
+    <textarea asp-for="Content" name="content" placeholder="Komentarz" class="w-100 p-2" rows="4"></textarea>
+    <span asp-validation-for="Content" class="text-danger"></span>
+    <div>
+        <input asp-for="Rating" data-role="rating" name="rating" data-values="1, 2, 3, 4, 5"  onchange="ActiveButton()" on>
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="text-end">
+        <button type="submit" id="buttonId"  class="btn btn-dark" disabled>Dodaj komentarz</button>
+    </div>
+</form>
+
+<script>
+    function ActiveButton() {
+        document.getElementById("buttonId").removeAttribute("disabled");
+    }
+</script>
