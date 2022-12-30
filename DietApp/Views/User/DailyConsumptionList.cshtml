@@ -1,0 +1,39 @@
+﻿@model IEnumerable<DietApp.Models.DailyConsumption>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Historia diety</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CaloricBalance)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CaloricBalance)
+                </td>
+                <td>
+                    <a asp-action="DailyConsumption" asp-route-id="@item.DailyConsumptionId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

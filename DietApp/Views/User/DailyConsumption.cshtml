@@ -1,0 +1,29 @@
+﻿@model DietApp.Models.DailyConsumption
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Lista posiłków z dnia @Model.Date</h1>
+<a asp-controller="User" asp-action="AddMeal"></a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Meals)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MealId)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

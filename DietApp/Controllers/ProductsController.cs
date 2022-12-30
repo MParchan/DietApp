@@ -83,7 +83,7 @@ namespace DietApp.Controllers
                     products = products.OrderBy(s => s.Name).ToList();
                     break;
             }
-            int pageSize = 5;
+            int pageSize = 10;
             return View(PaginatedList<Product>.Create(products, pageNumber ?? 1, pageSize));
         }
 

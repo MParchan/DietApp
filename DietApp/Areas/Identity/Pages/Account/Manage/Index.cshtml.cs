@@ -56,6 +56,7 @@ namespace DietApp.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
+            public string Username { get; set; }
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -70,6 +71,7 @@ namespace DietApp.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                Username = userName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -106,13 +108,23 @@ namespace DietApp.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Nieprawidłowy numer telefonu.";
+                    return RedirectToPage();
+                }
+            }
+            var userName = await _userManager.GetUserNameAsync(user);
+            if (Input.Username != userName)
+            {
+                var setUserResult = await _userManager.SetUserNameAsync(user, Input.Username);
+                if (!setUserResult.Succeeded)
+                {
+                    StatusMessage = "Nazwa użytkownika zajęta.";
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = "Twój profil został zaktualizowany";
             return RedirectToPage();
         }
     }

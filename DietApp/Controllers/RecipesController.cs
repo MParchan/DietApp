@@ -54,7 +54,7 @@ namespace DietApp.Controllers
                 recipes = recipes.Where(r => r.Category.Any(i => i.CategoryId == cat.CategoryId) == true).ToList();
             }
 
-            int pageSize = 1;
+            int pageSize = 10;
             return View(PaginatedList<Recipe>.Create(recipes, pageNumber ?? 1, pageSize));
         }
 

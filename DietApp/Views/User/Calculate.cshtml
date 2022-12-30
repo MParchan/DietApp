@@ -1,0 +1,72 @@
+﻿@model DietApp.Models.ApplicationUser
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Oblicz BMI i zapotrzebownie kaloryczne</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Calculate">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Age" class="control-label"></label>
+                <input asp-for="Age" class="form-control" />
+                <span asp-validation-for="Age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Height" class="control-label"></label>
+                <div class="input-group">
+                    <input asp-for="Height" class="form-control" />
+                    <span class="input-group-text"> cm </span>
+                </div>
+                <span asp-validation-for="Height" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Weight" class="control-label"></label>
+                <div class="input-group">
+                    <input asp-for="Weight" class="form-control" />
+                    <span class="input-group-text"> kg </span>
+                </div>
+                <span asp-validation-for="Weight" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" class="form-select">
+                    <option value=@null selected>--Wybierz--</option>
+                    <option value="Male">Mężczyzna</option>
+                    <option value="Female">Kobieta</option>
+                </select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Activity" class="control-label"></label>
+                <select asp-for="Activity" class="form-select">
+                    <option value=@null selected>--Wybierz--</option>
+                    <option value="Lack">Brak aktywności fizycznej</option>
+                    <option value="Light">Lekka aktywność (aktywność – ok. 140 minut tygodniowo)</option>
+                    <option value="Medium">Średnia aktywność (aktywność – ok. 280 minut tygodniowo)</option>
+                    <option value="High">Wysoka aktywność (aktywność – ok. 420 minut tygodniowo)</option>
+                    <option value="VeryHigh">Bardzo wysoka aktywność fizyczna (aktywność – ok. 560 minut tygodniowo)</option>
+                </select>
+                <span asp-validation-for="Activity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Oblicz" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
