@@ -20,8 +20,8 @@ namespace DietApp.Controllers
         public async Task<IActionResult> Index()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users.FindAsync(id);
-            if (id != null)
+            var user = _context.Users.Find(id);
+            if (user != null)
             {
                 string date = DateTime.Now.ToString("dd/MM/yyyy");
                 var existDC = _context.DailyConsumption.FirstOrDefault(d => d.Date.Equals(date) && d.User.Id.Equals(id));
