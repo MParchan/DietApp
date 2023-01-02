@@ -13,6 +13,40 @@
     <div class="row">
         <div class="col text-start">
             <p><b>@Model.First().Name</b></p>
+            @if (@Model.First().ImageName == null)
+            {
+                <div>
+                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" height="100px" />
+                </div>
+            }
+            else
+            {
+                <div>
+                    <img decoding="async" src="@("~/images/"+@Model.First().ImageName)" asp-append-version="true" height="100px" />
+                </div>
+            }
+        </div>
+        <div class="col text-center">
+            <p>VS</p>
+        </div>
+        <div class="col text-start">
+            <p><b>@Model.Last().Name</b></p>
+            @if (@Model.Last().ImageName == null)
+            {
+                <div>
+                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" height="100px" />
+                </div>
+            }
+            else
+            {
+                <div>
+                    <img decoding="async" src="@("~/images/"+@Model.Last().ImageName)" asp-append-version="true" height="100px" />
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col text-start">
             <ul>
                 <li>Kalorie/100g: @Model.First().KcalPer100 kcal</li>
                 <li>Tłuszcz/100g: @Model.First().FatPer100 g</li>
@@ -21,63 +55,61 @@
             </ul>
         </div>
         <div class="col text-center">
-            <p>VS</p>
             <ul class="list-unstyled">
-            @if (@Model.First().KcalPer100 > @Model.Last().KcalPer100)
-            {
-                <li>></li>
-            }
-            else if (@Model.First().KcalPer100 < @Model.Last().KcalPer100)
-            {
-                <li>&lt</li>
-            }
-            else
-            {
-                <li>=</li>
-            }
+                @if (@Model.First().KcalPer100 > @Model.Last().KcalPer100)
+                {
+                    <li>></li>
+                }
+                else if (@Model.First().KcalPer100 < @Model.Last().KcalPer100)
+                {
+                    <li>&lt</li>
+                }
+                else
+                {
+                    <li>=</li>
+                }
 
-            @if (@Model.First().FatPer100 > @Model.Last().FatPer100)
-            {
-                <li>></li>
-            }
-            else if (@Model.First().FatPer100 < @Model.Last().FatPer100)
-            {
-                <li>&lt</li>
-            }
-            else
-            {
-                <li>=</li>
-            }
+                @if (@Model.First().FatPer100 > @Model.Last().FatPer100)
+                {
+                    <li>></li>
+                }
+                else if (@Model.First().FatPer100 < @Model.Last().FatPer100)
+                {
+                    <li>&lt</li>
+                }
+                else
+                {
+                    <li>=</li>
+                }
 
-            @if (@Model.First().CarboPer100 > @Model.Last().CarboPer100)
-            {
-                <li>></li>
-            }
-            else if (@Model.First().CarboPer100 < @Model.Last().CarboPer100)
-            {
-                <li>&lt</li>
-            }
-            else
-            {
-                <li>=</li>
-            }
+                @if (@Model.First().CarboPer100 > @Model.Last().CarboPer100)
+                {
+                    <li>></li>
+                }
+                else if (@Model.First().CarboPer100 < @Model.Last().CarboPer100)
+                {
+                    <li>&lt</li>
+                }
+                else
+                {
+                    <li>=</li>
+                }
 
-            @if (@Model.First().ProteinPer100 > @Model.Last().ProteinPer100)
-            {
-                <li>></li>
-            }
-            else if (@Model.First().ProteinPer100 < @Model.Last().ProteinPer100)
-            {
-                <li>&lt</li>
-            }
-            else
-            {
-                <li>=</li>
-            }
+                @if (@Model.First().ProteinPer100 > @Model.Last().ProteinPer100)
+                {
+                    <li>></li>
+                }
+                else if (@Model.First().ProteinPer100 < @Model.Last().ProteinPer100)
+                {
+                    <li>&lt</li>
+                }
+                else
+                {
+                    <li>=</li>
+                }
             </ul>
         </div>
         <div class="col text-start">
-            <p><b>@Model.Last().Name</b></p>
             <ul>
                 <li>Kalorie/100g: @Model.Last().KcalPer100 kcal</li>
                 <li>Tłuszcz/100g: @Model.Last().FatPer100 g</li>
