@@ -1,5 +1,8 @@
 ﻿@using DietApp.Data
 @model PaginatedList<DietApp.Models.Product>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -114,13 +117,13 @@
             @if (item.ImageName == null )
             {
                 <td>
-                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" width="100px" height="100px" />
+                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" height="100px" />
                 </td>
             }
             else
             {
                 <td>
-                    <img decoding="async" src="@("~/images/"+item.ImageName)" asp-append-version="true" width="100px" height="100px" />
+                    <img decoding="async" src="@("~/images/"+item.ImageName)" asp-append-version="true" height="100px" />
                 </td>
             }
             <td>
@@ -136,7 +139,26 @@
                 @Html.DisplayFor(modelItem => item.ProteinPer100)
             </td>
             <td>
-                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Szczegóły</a>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+
+                        <text> |</text>
+                        @if(ViewBag.Favorites.Contains((Product)item))
+                        {
+                            <form id="form" method="post" asp-action="RemoveFavorite">
+                                <input type="hidden" name="indexPage" value="true" />
+                                <input type="hidden" name="id" value="@item.ProductId" />
+                                <input type="submit" value="Usuń z ulubionych" />
+                            </form>
+                        }
+                        else{
+                            <form id="form" method="post" asp-action="AddFavorite">
+                                <input type="hidden" name="id" value="@item.ProductId" />
+                                <input type="submit" value="Dodaj do ulubionych" />
+                            </form>
+                        }
+                    }
                     @if (ViewContext.HttpContext.User.IsInRole("Admin"))
                     {
                         <text> |</text> 

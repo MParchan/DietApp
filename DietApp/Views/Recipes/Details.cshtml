@@ -1,4 +1,8 @@
 ﻿@model DietApp.Models.Recipe
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
 
 @{
     ViewData["Title"] = "Details";
@@ -78,6 +82,18 @@
                         data-static="true" />
                 </div>
                 <p>@item.Content</p>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    @if (ViewContext.HttpContext.User.IsInRole("Admin") || UserManager.GetUserId(User) == item.UserId)
+                    {
+                        <div class="text-end">
+                            <form asp-action="DeleteComment">
+                                <input type="hidden" name="commentId" value="@item.CommentId" />
+                                <input type="submit" value="Usuń" />
+                            </form>
+                        </div>
+                    }
+                }
             </div>
         }
     </div>

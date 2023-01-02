@@ -38,6 +38,7 @@ namespace DietApp.Models
 
         public virtual ICollection<Recipe> Recipes { get; set; }
         public virtual ICollection<DailyConsumption> DailyFood { get; set; }
+        public virtual ICollection<Product> FavoriteProducts { get; set; }
     }
     public enum Gender
     {

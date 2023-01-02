@@ -4,6 +4,7 @@ using DietApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DietApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230102132619_editMeals")]
+    partial class editMeals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -275,9 +277,6 @@ namespace DietApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<double>("CarboPer100")
                         .HasColumnType("float");
 
@@ -302,8 +301,6 @@ namespace DietApp.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Products");
                 });
@@ -565,13 +562,6 @@ namespace DietApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DietApp.Models.Product", b =>
-                {
-                    b.HasOne("DietApp.Models.ApplicationUser", null)
-                        .WithMany("FavoriteProducts")
-                        .HasForeignKey("ApplicationUserId");
-                });
-
             modelBuilder.Entity("DietApp.Models.Recipe", b =>
                 {
                     b.HasOne("DietApp.Models.ApplicationUser", "User")
@@ -654,8 +644,6 @@ namespace DietApp.Migrations
             modelBuilder.Entity("DietApp.Models.ApplicationUser", b =>
                 {
                     b.Navigation("DailyFood");
-
-                    b.Navigation("FavoriteProducts");
 
                     b.Navigation("Recipes");
                 });

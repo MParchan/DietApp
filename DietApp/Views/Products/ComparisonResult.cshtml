@@ -1,0 +1,90 @@
+﻿@model IEnumerable<DietApp.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center p-4">
+    <p class="display-6">Porównanie produktów</p>
+</div>
+
+<div class="container  my-4">
+    <div class="row">
+        <div class="col text-start">
+            <p><b>@Model.First().Name</b></p>
+            <ul>
+                <li>Kalorie/100g: @Model.First().KcalPer100 kcal</li>
+                <li>Tłuszcz/100g: @Model.First().FatPer100 g</li>
+                <li>Węglowodany/100g: @Model.First().CarboPer100 g</li>
+                <li>Białko/100g: @Model.First().ProteinPer100 g</li>
+            </ul>
+        </div>
+        <div class="col text-center">
+            <p>VS</p>
+            <ul class="list-unstyled">
+            @if (@Model.First().KcalPer100 > @Model.Last().KcalPer100)
+            {
+                <li>></li>
+            }
+            else if (@Model.First().KcalPer100 < @Model.Last().KcalPer100)
+            {
+                <li>&lt</li>
+            }
+            else
+            {
+                <li>=</li>
+            }
+
+            @if (@Model.First().FatPer100 > @Model.Last().FatPer100)
+            {
+                <li>></li>
+            }
+            else if (@Model.First().FatPer100 < @Model.Last().FatPer100)
+            {
+                <li>&lt</li>
+            }
+            else
+            {
+                <li>=</li>
+            }
+
+            @if (@Model.First().CarboPer100 > @Model.Last().CarboPer100)
+            {
+                <li>></li>
+            }
+            else if (@Model.First().CarboPer100 < @Model.Last().CarboPer100)
+            {
+                <li>&lt</li>
+            }
+            else
+            {
+                <li>=</li>
+            }
+
+            @if (@Model.First().ProteinPer100 > @Model.Last().ProteinPer100)
+            {
+                <li>></li>
+            }
+            else if (@Model.First().ProteinPer100 < @Model.Last().ProteinPer100)
+            {
+                <li>&lt</li>
+            }
+            else
+            {
+                <li>=</li>
+            }
+            </ul>
+        </div>
+        <div class="col text-start">
+            <p><b>@Model.Last().Name</b></p>
+            <ul>
+                <li>Kalorie/100g: @Model.Last().KcalPer100 kcal</li>
+                <li>Tłuszcz/100g: @Model.Last().FatPer100 g</li>
+                <li>Węglowodany/100g: @Model.Last().CarboPer100 g</li>
+                <li>Białko/100g: @Model.Last().ProteinPer100 g</li>
+            </ul>
+        </div>
+    </div>
+    <a asp-action="Comparison" class="btn btn-dark mt-5">Powrót</a>
+</div>

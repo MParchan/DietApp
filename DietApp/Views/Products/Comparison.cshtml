@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Comparison";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="text-center p-4">
+    <p class="display-6">Porównaj produkty</p>
+</div>
+<div class="container  my-4">
+    <form asp-action="ComparisonResult" method="get">
+        <div class="row">
+            <div class="col text-center">
+                <div class="form-group">
+                    <label class="control-label">Wybierz produkt:</label>
+                    <select class="form-control" name="productId1">
+                        @foreach (var item in ViewBag.Products)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-1 text-center">
+                <p class="mt-4">VS</p>
+            </div>
+            <div class="col text-center">
+                <div class="form-group">
+                    <label class="control-label">Wybierz produkt:</label>
+                    <select class="form-control" name="productId2">
+                        @foreach (var item in ViewBag.Products)
+                        {
+                            <option value="@item.Value">@item.Text</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="text-center m-5">
+            <input type="submit" class="btn btn-dark" value="Porównaj"/>
+        </div>
+    </form>
+</div>

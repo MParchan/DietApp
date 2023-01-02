@@ -1,0 +1,81 @@
+﻿@model IEnumerable<DietApp.Models.Product>
+
+@{
+    ViewData["Title"] = "FavoriteProducts";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Ulubione produkty</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.KcalPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FatPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CarboPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProteinPer100)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RecipeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.KcalPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FatPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CarboPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProteinPer100)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecipeId)
+            </td>
+            @if (item.ImageName == null)
+            {
+                <td>
+                    <img decoding="async" src="@("~/default_image/default.jpg")" asp-append-version="true" height="100px" />
+                </td>
+            }
+            else
+            {
+                <td>
+                    <img decoding="async" src="@("~/images/"+item.ImageName)" asp-append-version="true" height="100px" />
+                </td>
+            }
+            <td>
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Szczegóły</a> |
+                    <form id="form" method="post" asp-action="RemoveFavorite">
+                        <input type="hidden" name="id" value="@item.ProductId"/>
+                        <input type="submit" value="Usuń z ulubionych"/>
+                    </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

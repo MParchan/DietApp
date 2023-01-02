@@ -11,25 +11,26 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddMeal">
+        <form asp-action="AddMeal" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
+            <input asp-for="UserId" type="hidden" class="form-control" value="@ViewBag.UserId" />
+            <input asp-for="DailyConsumptionId" type="hidden" class="form-control" value="@ViewBag.DailyConsumptionId" />
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DailyConsumptionId" class="control-label"></label>
-                <select asp-for="DailyConsumptionId" class ="form-control" asp-items="ViewBag.DailyConsumptionId"></select>
+                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.Products"></select>
+                <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Weight" class="control-label"></label>
-                <input asp-for="Weight" class="form-control" />
+                <div class="input-group">
+                    <input asp-for="Weight" type="number" class="form-control" />
+                    <span class="input-group-text"> g </span>
+                </div>
                 <span asp-validation-for="Weight" class="text-danger"></span>
             </div>
+            <span asp-validation-for="UserId" class="text-danger"></span>
+            <span asp-validation-for="DailyConsumptionId" class="text-danger"></span>
+            <span asp-validation-for="MealId" class="text-danger"></span>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

@@ -314,10 +314,32 @@ namespace DietApp.Controllers
             if (ModelState.IsValid)
             {
                 comment.UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                comment.Date = DateTime.Now;
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Details", new { id = comment.RecipeId });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteComment(int commentId)
+        {
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine(commentId);
+            if (_context.Comments == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Comments'  is null.");
+            }
+            var comment = await _context.Comments.FindAsync(commentId);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new  { id = comment.RecipeId });
         }
 
         private bool RecipeExists(int id)

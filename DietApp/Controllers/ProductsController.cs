@@ -11,6 +11,7 @@ using System.Drawing;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Data.SqlClient;
+using System.Security.Claims;
 
 namespace DietApp.Controllers
 {
@@ -26,8 +27,15 @@ namespace DietApp.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index(string order, string search, string currentFilter, int? pageNumber)
+        public async Task<IActionResult> Index(string order, string search, string currentFilter, int? pageNumber, int? toFavorite)
         {
+            ViewBag.Favorites = new List<Product>();
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(id != null)
+            {
+                var user = await _context.Users.Include(u => u.FavoriteProducts).FirstOrDefaultAsync(u => u.Id.Equals(id));
+                ViewBag.Favorites = user.FavoriteProducts;
+            }
             ViewData["Order"] = order;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(order) ? "name_desc" : "";
             ViewData["KcalSortParm"] = order == "kcal" ? "kcal_desc" : "kcal";
@@ -85,6 +93,54 @@ namespace DietApp.Controllers
             }
             int pageSize = 10;
             return View(PaginatedList<Product>.Create(products, pageNumber ?? 1, pageSize));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> FavoriteProducts()
+        {
+            var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.Include(u => u.FavoriteProducts).FirstOrDefaultAsync(u => u.Id.Equals(id));
+            var products = user.FavoriteProducts.ToList();
+            return View(products);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> RemoveFavorite(int? id, bool? indexPage)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var product = _context.Products.Find(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.Include(u => u.FavoriteProducts).FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            user.FavoriteProducts.Remove(product);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            if(indexPage == true)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(FavoriteProducts));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> AddFavorite(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var product = _context.Products.Find(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.Include(u => u.FavoriteProducts).FirstOrDefaultAsync(u => u.Id.Equals(userId));
+            user.FavoriteProducts.Add(product);
+            _context.Update(user);
+            await _context.SaveChangesAsync();
+            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Products/Details/5
@@ -249,5 +305,25 @@ namespace DietApp.Controllers
         {
           return _context.Products.Any(e => e.ProductId == id);
         }
+
+        public IActionResult Comparison()
+        {
+            ViewBag.Products = new SelectList(_context.Products, "ProductId", "Name");
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ComparisonResult(int productId1, int productId2)
+        {
+            var product1 = await _context.Products.FindAsync(productId1);
+            var product2 = await _context.Products.FindAsync(productId2);
+            List<Product> products = new()
+            {
+                product1, 
+                product2
+            };
+            return View(products);
+        }
+
     }
 }

@@ -27,10 +27,10 @@
                     @Html.DisplayFor(modelItem => item.Date)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CaloricBalance)
+                    @Html.DisplayFor(modelItem => item.CaloricBalance) kcal
                 </td>
                 <td>
-                    <a asp-action="DailyConsumption" asp-route-id="@item.DailyConsumptionId">Details</a>
+                    <a asp-action="DailyConsumption" asp-route-id="@item.DailyConsumptionId">Szczegóły</a>
                 </td>
             </tr>
         }

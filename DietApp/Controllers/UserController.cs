@@ -2,6 +2,7 @@
 using DietApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
@@ -37,6 +38,7 @@ namespace DietApp.Controllers
                 return NotFound();
             }
             var dailyConsumption = await _context.DailyConsumption.Where(d => d.UserId.Equals(id)).ToListAsync();
+            dailyConsumption.Reverse();
             return View(dailyConsumption);
         }
 
@@ -49,24 +51,79 @@ namespace DietApp.Controllers
                 return NotFound();
             }
             var dailyConsumption = await _context.DailyConsumption.Include(d => d.User)
-                    .Include(d => d.Meals).FirstOrDefaultAsync(d => d.DailyConsumptionId == id);
+                    .Include(d => d.Meals).ThenInclude(m => m.Product)
+                    .FirstOrDefaultAsync(d => d.DailyConsumptionId == id);
             if(dailyConsumption == null)
             {
                 return NotFound();
             }
+            double totalKcal = 0;
+            double totalFat = 0;
+            double totalCarbo = 0;
+            double totalProtein = 0;
+            foreach (var item in dailyConsumption.Meals)
+            {
+                totalKcal += item.TotalKcal;
+                totalFat += item.TotalFat;
+                totalCarbo += item.TotalCarbo;
+                totalProtein += item.TotalProtein;
+            }
+            totalKcal = Math.Round(totalKcal,2);
+            totalFat = Math.Round(totalFat,2);
+            totalCarbo = Math.Round(totalCarbo,2);
+            totalProtein = Math.Round(totalProtein,2);
+            ViewBag.TotalKcal = totalKcal;
+            ViewBag.TotalFat = totalFat;
+            ViewBag.TotalCarbo = totalCarbo;
+            ViewBag.TotalProtein = totalProtein;
             return View(dailyConsumption);
         }
 
         public IActionResult AddMeal(int? dailyId)
         {
-            if(dailyId == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (dailyId == null || userId == null)
             {
                 return NotFound();
             }
-            ViewBag.DailyConsumptionId = dailyId;
+            ViewBag.UserId = userId;
+            ViewBag.DailyConsumptionId = (int)dailyId;
+            ViewBag.Products = new SelectList(_context.Products, "ProductId", "Name");
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMeal([Bind("MealId,UserId,ProductId,DailyConsumptionId,Weight")] Meal meal)
+        {
+            if (ModelState.IsValid)
+            {
+                var product = _context.Products.Find(meal.ProductId);
+                meal.TotalKcal = Math.Round(product.KcalPer100*meal.Weight/100,2);
+                meal.TotalFat = Math.Round(product.FatPer100 * meal.Weight / 100, 2);
+                meal.TotalCarbo = Math.Round(product.CarboPer100 * meal.Weight / 100, 2);
+                meal.TotalProtein = Math.Round(product.ProteinPer100 * meal.Weight / 100, 2);
+                _context.Add(meal);
+                var dailyConsumption = _context.DailyConsumption.Find(meal.DailyConsumptionId);
+                if(dailyConsumption != null)
+                {
+                    dailyConsumption.CaloricBalance += meal.TotalKcal;
+                    dailyConsumption.CaloricBalance = Math.Round(dailyConsumption.CaloricBalance, 2);
+                    _context.Update(dailyConsumption);
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(DailyConsumptionList));
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            ViewBag.UserId = userId;
+            ViewBag.DailyConsumptionId = meal.DailyConsumptionId;
+            ViewBag.Products = new SelectList(_context.Products, "ProductId", "Name");
+            return View(meal);
+        }
         public IActionResult Calculate()
         {
             var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -136,6 +193,27 @@ namespace DietApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMeal(int mealId, int dailyConsumptionId)
+        {
+            if (_context.Meals == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Meals'  is null.");
+            }
+            var meal = await _context.Meals.FindAsync(mealId);
+            if (meal != null)
+            {
+                var dailyConsumption = _context.DailyConsumption.Find(dailyConsumptionId);
+                dailyConsumption.CaloricBalance -= meal.TotalKcal;
+                dailyConsumption.CaloricBalance = Math.Round(dailyConsumption.CaloricBalance, 2);
+                _context.Meals.Remove(meal);
+                _context.Update(dailyConsumption);
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("DailyConsumption",new { id = dailyConsumptionId });
         }
 
         private bool UserExists(string id)

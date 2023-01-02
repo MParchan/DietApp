@@ -6,12 +6,39 @@
 }
 
 <h1>Lista posiłków z dnia @Model.Date</h1>
-<a asp-controller="User" asp-action="AddMeal"></a>
+<div>
+    <p>Podsumowanie</p>
+    <ul>
+        <li>Kalorie: @ViewBag.TotalKcal kcal</li>
+        <li>Tłuszcz: @ViewBag.TotalFat g</li>
+        <li>Węglowodany: @ViewBag.TotalCarbo g</li>
+        <li>Białko: @ViewBag.TotalProtein g</li>
+        <li>Bilans kaloryczny: @Model.CaloricBalance kcal</li>
+    </ul>
+</div>
+<div>
+    <a class="btn btn-dark" asp-controller="User" asp-action="AddMeal" asp-route-dailyId="@Model.DailyConsumptionId">Dodaj posiłek</a>
+</div>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Meals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals.First().Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals.First().TotalKcal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals.First().TotalFat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals.First().TotalCarbo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Meals.First().TotalProtein)
             </th>
             <th></th>
         </tr>
@@ -21,7 +48,29 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MealId)
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Weight) g
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalKcal) kcal
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalFat) g
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalCarbo) g
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalProtein) g
+                </td>
+                <td>
+                    <form asp-action="DeleteMeal">
+                        <input type="hidden" name="mealId" value="@item.MealId" />
+                        <input type="hidden" name="dailyConsumptionId" value="@Model.DailyConsumptionId" />
+                        <input type="submit" value="Usuń posiłek" />
+                    </form>
                 </td>
             </tr>
         }
